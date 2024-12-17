@@ -17,16 +17,10 @@ import java.util.Set;
 public class Permission {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long permissionId;
-
-    @Column(name = "permission_name", unique = true, nullable = false)
+    @Column(name = "permission_name")
     private String permissionName;
 
     @Column
     private String description;
-
-    @ManyToMany(mappedBy = "permissions")
-    private Set<Role> roles;
 
 }

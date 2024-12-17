@@ -41,6 +41,9 @@ public class Recipe {
     @Enumerated(EnumType.STRING)
     private RecipeStatus status;
 
+    @Column(name = "portions")
+    private String portions;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
@@ -53,7 +56,7 @@ public class Recipe {
     private List<RecipeStep> recipeSteps;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RecipePortion> recipePortions;
+    private List<Ingredient> ingredients;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;

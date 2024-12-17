@@ -18,9 +18,10 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ingredientId;
 
+
     @ManyToOne
-    @JoinColumn(name = "portion_id")
-    private RecipePortion portion;
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
 
     @Column
     private String name;

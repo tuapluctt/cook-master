@@ -3,3 +3,8 @@ spring:
     url: "jdbc:mysql://localhost:3307/cook_master"
     username: root
     password: root
+
+cloudinary:
+  apiSecret: "MOMP9xSrbxyBaBeRzeo13cjPHqM"
+  cloudName: "dr1bmll8b"
+  apiKey: "686763131799354"
