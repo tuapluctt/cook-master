@@ -19,21 +19,21 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    Long commentId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    User user;
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", nullable = false)
-    private Recipe recipe;
+    Recipe recipe;
 
     @Column(name = "comment_text")
-    private String commentText;
+    String commentText;
 
     @Column(name = "comment_image_url")
-    private String commentImageUrl;
+    String commentImageUrl;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

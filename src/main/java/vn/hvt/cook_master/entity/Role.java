@@ -18,10 +18,10 @@ public class Role {
 
     @Id
     @Column(name = "role_name")
-    private String roleName;
+     String roleName;
 
     @Column
-    private String description;
+     String description;
 
     @ManyToMany
     @JoinTable(
@@ -29,10 +29,10 @@ public class Role {
             joinColumns = @JoinColumn(name = "role_name"),
             inverseJoinColumns = @JoinColumn(name = "permission_name")
     )
-    private Set<Permission> permissions;
+     Set<Permission> permissions;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+     Set<User> users;
 
 
 

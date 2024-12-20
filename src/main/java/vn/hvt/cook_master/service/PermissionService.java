@@ -11,6 +11,7 @@ import java.util.Optional;
 @Service
 public interface PermissionService {
     List<PermissionResponse> getAllPermissions();
+
     PermissionResponse createPermission(PermissionRequest request);
     void deletePermission(String permissionName);
 }

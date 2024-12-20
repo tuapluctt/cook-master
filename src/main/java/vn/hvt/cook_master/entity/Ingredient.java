@@ -16,17 +16,17 @@ public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ingredientId;
+    Long ingredientId;
 
 
     @ManyToOne
     @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+    Recipe recipe;
 
     @Column
-    private String name;
+    String name;
 
     @Column
-    private String quantity;
+    String quantity;
 
 }

@@ -2,12 +2,16 @@ package vn.hvt.cook_master.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.hvt.cook_master.dto.request.RoleRequest;
 import vn.hvt.cook_master.dto.response.RoleResponse;
 import vn.hvt.cook_master.entity.Permission;
 import vn.hvt.cook_master.entity.Role;
+import vn.hvt.cook_master.exception.AppException;
+import vn.hvt.cook_master.exception.ErrorCode;
+import vn.hvt.cook_master.mapper.RoleMapper;
 import vn.hvt.cook_master.repository.PermissionRepository;
 import vn.hvt.cook_master.repository.RoleRepository;
 import vn.hvt.cook_master.service.RoleService;
@@ -22,65 +26,86 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class RoleServiceImpl implements RoleService {
-    private final PermissionRepository permissionRepository;
+    PermissionRepository permissionRepository;
     RoleRepository roleRepository;
+    RoleMapper roleMapper;
+
 
     @Override
     public List<RoleResponse> getAllRoles() {
         return roleRepository.findAll().stream()
-                .map(this::convertToResponse)
+                .map(roleMapper::toRoleResponse)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Optional<RoleResponse> getRoleByName(String roleName) {
-        return roleRepository.findById(roleName)
-                .map(this::convertToResponse);
-    }
 
     @Override
     @Transactional
     public RoleResponse createRole(RoleRequest roleRequest) {
+        if (roleRepository.existsById(roleRequest.getRoleName())){
+            throw new AppException(ErrorCode.ROLE_EXISTED);
+        }
+        var role = roleMapper.toRole(roleRequest);
         List<Permission> permissions = permissionRepository.findAllById(roleRequest.getPermissions());
 
-        Role role = Role.builder()
-                .roleName(roleRequest.getRoleName())
-                .description(roleRequest.getDescription())
-                .permissions(new HashSet<>(permissions)) // Set permissions cho role
-                .build();
+        if (permissions.size() != roleRequest.getPermissions().size()) {
+            // lấy ds những permission không tồn tại
+            List<String> notFoundPermissions = roleRequest.getPermissions().stream()
+                    .filter(permissionName -> permissions.stream().noneMatch(p -> p.getPermissionName().equals(permissionName)))
+                    .collect(Collectors.toList());
+            throw new AppException(ErrorCode.PERMISSION_NOT_EXISTED, "Permissions not found: " + notFoundPermissions);
+        }
 
-        Role savedRole = roleRepository.save(role);
-        return convertToResponse(savedRole);
+        role.setPermissions(new HashSet<>(permissions));
+
+        return roleMapper.toRoleResponse(roleRepository.save(role));
     }
 
     @Override
     @Transactional
-    public RoleResponse updateRole(String roleName, RoleRequest roleRequest) {
+    public void addPermissionToRole(String roleName, String permissionName) {
         Role role = roleRepository.findById(roleName)
-                .orElseThrow(() -> new RuntimeException("Role not found")); // Xử lý exception phù hợp
-        role.setDescription(roleRequest.getDescription());
-        // Cập nhật các trường khác nếu cần
-        Role updatedRole = roleRepository.save(role);
-        return convertToResponse(updatedRole);
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Permission permission = permissionRepository.findById(permissionName)
+                .orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_EXISTED));
+
+        // Kiểm tra xem role đã có permission này chưa
+        if (role.getPermissions().contains(permission)) {
+            throw new AppException(ErrorCode.INVALID_DATA, "Role already has permission: " + permissionName);
+        }
+
+        role.getPermissions().add(permission);
+        roleRepository.save(role);
+    }
+
+    @Override
+    @Transactional
+    public void removePermissionFromRole(String roleName, String permissionName) {
+        Role role = roleRepository.findById(roleName)
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+
+        Permission permission = permissionRepository.findById(permissionName)
+                .orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_EXISTED));
+
+        // Kiểm tra xem role có permission này không
+        if (!role.getPermissions().contains(permission)) {
+            throw new AppException(ErrorCode.INVALID_DATA, "Role does not have permission: " + permissionName);
+        }
+
+        role.getPermissions().remove(permission);
+        roleRepository.save(role);
+
     }
 
     @Override
     @Transactional
     public void deleteRole(String roleName) {
+        Role role = roleRepository.findById(roleName)
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+
         roleRepository.deleteById(roleName);
     }
 
-    private RoleResponse convertToResponse(Role role) {
-        return RoleResponse.builder()
-                .roleName(role.getRoleName())
-                .description(role.getDescription())
-                .build();
-    }
 
-    private RoleResponse convertToResponse(RoleRequest request) {
-        return RoleResponse.builder()
-                .roleName(request.getRoleName())
-                .description(request.getDescription())
-                .build();
-    }
 }

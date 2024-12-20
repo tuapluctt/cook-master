@@ -16,13 +16,13 @@ public class StepImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stepImageId;
+     Long stepImageId;
 
     @ManyToOne
     @JoinColumn(name = "step_id", nullable = false)
-    private RecipeStep recipeStep;
+     RecipeStep recipeStep;
 
     @Column(name = "image_url", nullable = false)
-    private String imageUrl;
+     String imageUrl;
 
 }

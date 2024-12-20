@@ -27,16 +27,6 @@ public class RoleController {
                 .build();
     }
 
-    @GetMapping("/{roleName}")
-    public ApiResponse<RoleResponse> getRoleByName(@PathVariable String roleName) {
-        return roleService.getRoleByName(roleName)
-                .map(role -> ApiResponse.<RoleResponse>builder()
-                        .result(role)
-                        .build())
-                .orElse(ApiResponse.<RoleResponse>builder()
-                        .message("Role not found")
-                        .build());
-    }
 
     @PostMapping
     public ApiResponse<RoleResponse> createRole(@Valid @RequestBody RoleRequest roleRequest) {
@@ -45,25 +35,25 @@ public class RoleController {
                 .build();
     }
 
-    @PutMapping("/{roleName}")
-    public ApiResponse<RoleResponse> updateRole(@PathVariable String roleName, @Valid @RequestBody RoleRequest roleRequest) {
-        if (roleService.getRoleByName(roleName).isEmpty()) {
-            return ApiResponse.<RoleResponse>builder()
-                    .message("Role not found")
-                    .build();
-        }
-        return ApiResponse.<RoleResponse>builder()
-                .result(roleService.updateRole(roleName, roleRequest))
-                .build();
+    @PostMapping("/{roleName}/permissions/add")
+    public ApiResponse<?> addPermissionToRole(
+            @PathVariable String roleName,
+            @RequestParam String permissionName) {
+       roleService.addPermissionToRole(roleName, permissionName);
+        return ApiResponse.builder().build();
+    }
+
+    @DeleteMapping("/{roleName}/permissions/remove")
+    public ApiResponse<?> removePermissionFromRole(
+            @PathVariable String roleName,
+            @RequestParam String permissionName) {
+        roleService.removePermissionFromRole(roleName, permissionName);
+        return ApiResponse.builder().build();
     }
 
     @DeleteMapping("/{roleName}")
     public ApiResponse<?> deleteRole(@PathVariable String roleName) {
-        if (roleService.getRoleByName(roleName).isEmpty()) {
-            return ApiResponse.builder()
-                    .message("Role not found")
-                    .build();
-        }
+
         roleService.deleteRole(roleName);
         return ApiResponse.builder()
                 .build();

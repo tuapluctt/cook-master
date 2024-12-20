@@ -20,17 +20,17 @@ public class Follow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long followId;
+    Long followId;
 
     @ManyToOne
     @JoinColumn(name = "follower_id", nullable = false) // Người theo dõi
-    private User follower;
+    User follower;
 
     @ManyToOne
     @JoinColumn(name = "following_id", nullable = false) // Người được theo dõi
-    private User following;
+    User following;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private Timestamp createdAt;
+    Timestamp createdAt;
 }

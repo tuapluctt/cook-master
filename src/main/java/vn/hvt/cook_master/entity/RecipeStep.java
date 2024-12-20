@@ -20,18 +20,18 @@ import java.util.Set;
 public class RecipeStep {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stepId;
+     Long stepId;
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", nullable = false)
-    private Recipe recipe;
+     Recipe recipe;
 
     @Column(name = "step_number", nullable = false)
-    private Integer stepNumber;
+     Integer stepNumber;
 
     @Column
-    private String instruction;
+     String instruction;
 
     @OneToMany(mappedBy = "recipeStep", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StepImage> stepImages;
+     List<StepImage> stepImages;
 }

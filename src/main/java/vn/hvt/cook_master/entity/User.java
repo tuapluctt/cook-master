@@ -26,6 +26,12 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(name = "full_name", nullable = false)
+    private String fullName; // Họ và tên đầy đủ
+
+    @Column(name = "nick_name")
+    private String nickName;
+
     @Column(unique = true, nullable = false)
     private String email;
 

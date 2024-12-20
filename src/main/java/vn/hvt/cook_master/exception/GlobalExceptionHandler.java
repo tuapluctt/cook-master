@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
 
         ApiResponse response = ApiResponse.builder()
                 .code(errorCode.getCode())
-                .message(errorCode.getMessage())
+                .message(e.getMessage())
                 .build();
 
         return ResponseEntity.status(errorCode.getHttpStatusCode()).body(response);
