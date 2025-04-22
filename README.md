@@ -2,7 +2,7 @@
 ## Công nghệ sử dụng
 
 *   **Framework:** Spring Boot (Phiên bản 3.x)
-*   **Database:** MySQL (Hoặc PostgreSQL, H2 tùy cấu hình)
+*   **Database:** MySQL 
 *   **Bảo mật:** Spring Security, JWT (JSON Web Tokens)
 *   **Lưu trữ ảnh:** AWS S3 (Amazon Simple Storage Service)
 *   **Build Tool:** Maven
