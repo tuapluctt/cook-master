@@ -6,7 +6,7 @@
 *   **Bảo mật:** Spring Security, JWT (JSON Web Tokens)
 *   **Lưu trữ ảnh:** AWS S3 (Amazon Simple Storage Service)
 *   **Build Tool:** Maven
-*   **Mapping:** MapStruct (Tùy chọn, nếu bạn dùng)
+*   **Mapping:** MapStruct 
 *   **Logging:** SLF4J
 
 ## Tính năng chính
